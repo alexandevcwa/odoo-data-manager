@@ -1,0 +1,15 @@
+spring:
+  main:
+    banner-mode: off
+    web-application-type: none
+  shell:
+    interactive:
+      enabled: true
+    script:
+      enabled: true
+  application:
+    name: odoo-data-export
+  datasource:
+    url: ${DB_URL} #jdbc:postgresql://localhost:5432/odoo
+    username: ${DB_USERNAME} #openpg
+    password: ${DB_PASSWORD} #openpgpwd
