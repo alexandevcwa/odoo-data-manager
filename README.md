@@ -23,9 +23,12 @@
 Usando el wrapper de Maven incluido:
 
 ```bash
-./mvnw clean package
-# Ejecutar la app (ejemplo de argumento: ruta donde guardar el .oxml)
-java -jar target/odoo-data-manager-*-SNAPSHOT.jar /ruta/a/salida
+./mvnw clean package -DskipTests -Dspring.datasource.url=jdbc:postgresql://localhost:5432/odoo -Dspring.datasource.username=youruser -Dspring.datasource.password=yourpass
+# Ejecutar la app (ejemplo pasando properties de conexión y el comando shell)
+java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/odoo \
+	-Dspring.datasource.username=user \
+	-Dspring.datasource.password=pass  \
+	-jar odoo-data-manager-0.0.1-SNAPSHOT.jar odoo-export --path /your/path/
 ```
 
 ## Uso con Spring Shell

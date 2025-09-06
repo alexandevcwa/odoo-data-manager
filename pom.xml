@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.odoo</groupId>
-	<artifactId>odoo-data-export</artifactId>
+	<artifactId>odoo-data-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>odoo-data-export</name>
+	<name>odoo-data-manager</name>
 	<description>Demo project for Spring Boot</description>
 	<url />
 	<licenses>

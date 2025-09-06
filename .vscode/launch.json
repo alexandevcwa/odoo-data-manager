@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "OdooDataManagerApplication",
+      "request": "launch",
+      "mainClass": "com.odoo.manager.OdooDataManagerApplication",
+      "projectName": "odoo-data-export",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
