@@ -587,3 +587,21 @@ CREATE TRIGGER trg_exp_account_full_reconcile
 before insert or update or delete ON account_full_reconcile
 FOR EACH ROW
 EXECUTE FUNCTION f_account_full_reconcile_export();
+
+------------------------------------------
+-- TABLA QUE CONTIENE EL NOMBRE DEL SCHEMA
+-- DE IMPORTACIÓN DE LA BASE DE DATOS CENTRAL
+-- NOMENCLATURA GENERADA EN EL OXML
+--  {odoo_instance_id}_{odoo_schema} (UPPERCASE)
+------------------------------------------
+CREATE TABLE odoo_schema_exp(
+    odoo_instance_id int primary key,
+    odoo_schema varchar(30) not null unique,
+    odoo_company_id serial4 not null,
+    constraint fk_res_comapny foreign key (odoo_company_id)
+    	references res_company(id)
+);
+
+-- REEMPLAZA 'ODOO_1' POR EL NOMBRE DE TU SCHEMA EN TU BASE DE DATOS CENTRAL,
+insert into odoo_schema_exp (odoo_instance_id, odoo_schema, odoo_company_id)
+	values (1,'ODOO_1',1);

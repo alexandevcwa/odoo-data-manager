@@ -3,6 +3,8 @@ package com.odoo.manager.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -12,7 +14,9 @@ import com.odoo.manager.model.AccountMoveLine;
 import com.odoo.manager.model.AccountPartialReconcile;
 import com.odoo.manager.model.AccountPayment;
 import com.odoo.manager.model.AccountPaymentRegister;
+import com.odoo.manager.model.Header;
 import com.odoo.manager.model.OdooData;
+import com.odoo.manager.model.OdooSchema;
 import com.odoo.manager.model.ProductCategory;
 import com.odoo.manager.model.ProductProduct;
 import com.odoo.manager.model.ProductTemplate;
@@ -51,14 +55,15 @@ public class OdooExportServiceImpl implements OdooExportService {
     private final AccountPaymentRepo accountPaymentRepo;
     private final AccountPartialReconcileRepo accountPartialReconcileRepo;
     private final AccountFullReconcileRepo accountFullReconcileRepo;
+    private final OdooSchemaRepo odooSchemaRepo;
 
     @Override
-    public void export(String path) {
+    public void export(String path, short instanceId) {
 
         try {
             String fileName = generateOdooFileName(path);
-
-            OdooData odooData = obtainerOdooDataObj();
+            OdooData odooData = odooData();
+            odooData.setHeader(header(instanceId));
 
             transactionTemplate.execute(status -> {
                 try {
@@ -82,7 +87,7 @@ public class OdooExportServiceImpl implements OdooExportService {
 
     }
 
-    private OdooData obtainerOdooDataObj() {
+    private OdooData odooData() {
         List<ProductCategory> productCategories = productCategoryExpRepo.findAllByExportedIsNotNull();
         List<ProductTemplate> productTemplates = productTemplateRepo.findAllByExportedIsNotNull();
         List<ProductProduct> productProducts = productProductRepo.findAllByExportedIsNotNull();
@@ -129,6 +134,17 @@ public class OdooExportServiceImpl implements OdooExportService {
         accountPaymentRepo.markGroupAsExported(odooData.getAccountPaymentList());
         accountPartialReconcileRepo.markGroupAsExported(odooData.getAccountPartialReconcileList());
         accountFullReconcileRepo.markGroupAsExported(odooData.getAccountFullReconcileList());
+    }
+
+    private Header header(Short instanceId) {
+
+        OdooSchema odooSchema = odooSchemaRepo.findOdooSchemaByOdooCompanyId(instanceId)
+                .orElseThrow(() -> new EmptyResultDataAccessException(
+                        String.format("Schema with instance id %d does not exist", instanceId), 1));
+        return Header.builder()
+                .odooSchema(odooSchema)
+                .exportedDate(LocalDateTime.now())
+                .build();
     }
 
     private String generateOdooFileName(String path) throws IOException {

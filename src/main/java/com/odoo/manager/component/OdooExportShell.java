@@ -17,7 +17,9 @@ public class OdooExportShell {
     private final OdooExportService odooExportService;
 
     @ShellMethod(key = "odoo-export", value = "Export data from Odoo to XML file")
-    public void exportOdooData(@ShellOption("path") String path) {
-        odooExportService.export(path);
+    public void exportOdooData(
+            @ShellOption("path") String path,
+            @ShellOption("instance") Short instanceId) {
+        odooExportService.export(path, instanceId);
     }
 }

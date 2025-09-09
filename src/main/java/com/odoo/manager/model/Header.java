@@ -17,18 +17,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Header {
 
-    @JacksonXmlProperty(localName = "ExportDate")
-    private LocalDateTime exportDate;
+    @JacksonXmlProperty(localName = "exportedDate")
+    private LocalDateTime exportedDate;
 
-    @JacksonXmlProperty(localName = "SystemVersion")
-    private String systemVersion;
+    @JacksonXmlProperty(localName = "odooSchema")
+    private OdooSchema odooSchema;
 
-    @JacksonXmlProperty(localName = "RecordCount")
-    private Long recordCount;
-
-    @JacksonXmlProperty(localName = "HostIP")
-    private String hostIp;
-
-    @JacksonXmlProperty(localName = "HostName")
-    private String hostName;
 }

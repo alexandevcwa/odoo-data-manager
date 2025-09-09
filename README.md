@@ -4,6 +4,18 @@
 
 `odoo-data-manager` es una pequeña utilidad Java (Spring Boot) para extraer conjuntos de datos desde tablas de exportación de Odoo y guardarlos en un archivo OXML (XML con estructura del modelo). El proyecto lee registros marcados como "no exportados", serializa los datos a un archivo usando Jackson `XmlMapper` y luego marca los registros como exportados en la base de datos.
 
+## Instalación
+
+Ejecuta ordenadamente los scrips SQL en tu instancia de base de datos odoo ubicados en la carpeta `migrations`.
+
+Luego ejecutar todos los archivos SQL en la instancia, es requerido insertar el código de instancia, nombre del schema y el código de compañia configurada en odoo.
+
+```sql
+insert into odoo_schema_exp (odoo_instance_id, odoo_schema, odoo_company_id) values (1,'ODOO_1',1);
+```
+
+El nombre de esquema debe de ser igual al configurado en el centro de datos de respaldo para que los datos se puedan importar en el schema correcto. Si se tienen 2 instancias de odoo, en el centro de datos debe de existir dos esquemas, uno para cada instancia para separa sus datos.
+
 ## Principales responsabilidades
 
 - Consultar registros pendientes de exportación (repositorios en `src/main/java/com/odoo/manager/repo`).
@@ -24,11 +36,11 @@ Usando el wrapper de Maven incluido:
 
 ```bash
 ./mvnw clean package -DskipTests -Dspring.datasource.url=jdbc:postgresql://localhost:5432/odoo -Dspring.datasource.username=youruser -Dspring.datasource.password=yourpass
+
+
 # Ejecutar la app (ejemplo pasando properties de conexión y el comando shell)
-java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/odoo \
-	-Dspring.datasource.username=user \
-	-Dspring.datasource.password=pass  \
-	-jar odoo-data-manager-0.0.1-SNAPSHOT.jar odoo-export --path /your/path/
+
+java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/odoo -Dspring.datasource.username=user -Dspring.datasource.password=pass -jar odoo-data-manager-0.0.1-SNAPSHOT.jar odoo-export --path {/your/path/} --instance {INSTANCE_ID}
 ```
 
 ## Uso con Spring Shell
