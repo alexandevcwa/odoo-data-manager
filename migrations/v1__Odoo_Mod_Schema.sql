@@ -13,10 +13,7 @@
 ------------------------------------------
 -- PRODUCT_CATEGORY_EXP
 ------------------------------------------
-select * from product_category;
-select * from product_category_exp;
 create table product_category_exp as table product_category with no data;
-
 alter table product_category_exp add column operation varchar(1);
 alter table product_category_exp add column operation_sys timestamp default CURRENT_TIMESTAMP;
 alter table product_category_exp add column exported varchar(1);
@@ -94,12 +91,12 @@ EXECUTE FUNCTION f_product_template_export();
 ------------------------------------------
 -- PRODUCT_TAXES_REL (OMITIDA)
 ------------------------------------------
-select * from product_taxes_rel
+select * from product_taxes_rel;
 
 ------------------------------------------
 -- PRODUCT_SUPPLIER_TAXES_REL (OMITIDA)
 ------------------------------------------
-select * from product_supplier_taxes_rel
+select * from product_supplier_taxes_rel;
 
 ------------------------------------------
 -- PRODUCT_PRODUCT_EXP
