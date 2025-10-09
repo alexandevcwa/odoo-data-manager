@@ -42,8 +42,8 @@ public class OdooExportServiceImpl implements OdooExportService {
     private final XmlMapper xmlMapper;
     private final TransactionTemplate transactionTemplate;
 
-    private final ProductCategoryRepo productCategoryExpRepo;
-    private final ProductTemplateRepo productTemplateRepo;
+    private final ProductCategoryBaseRepo productCategoryExpRepo;
+    private final ProductTemplateBaseRepo productTemplateRepo;
     private final ProductProductRepo productProductRepo;
     private final ResPartnerRepo resPartnerRepo;
     private final SaleOrderRepo saleOrderRepo;

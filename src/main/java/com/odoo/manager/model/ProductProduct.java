@@ -65,4 +65,7 @@ public class ProductProduct {
     @JacksonXmlProperty(localName = "operationSys")
     private LocalDateTime operationSys;
 
+    @JacksonXmlProperty(localName = "exported")
+    private String exported; // varchar(1
+
 }

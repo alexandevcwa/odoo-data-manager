@@ -1,6 +1,7 @@
 spring:
+  banner:
+    location: classpath:banner.txt
   main:
-    banner-mode: off
     web-application-type: none
   shell:
     interactive:

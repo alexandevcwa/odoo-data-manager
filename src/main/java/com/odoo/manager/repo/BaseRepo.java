@@ -1,6 +1,7 @@
 package com.odoo.manager.repo;
 
 import java.util.List;
+import java.util.Queue;
 
 public interface BaseRepo<T> {
 
@@ -15,4 +16,10 @@ public interface BaseRepo<T> {
      * Mark database rows as exported
      */
     void markGroupAsExported(List<T> group);
+
+    /**
+     *
+     * @param queue
+     */
+    void saveBatch(List<T> queue, String schema);
 }

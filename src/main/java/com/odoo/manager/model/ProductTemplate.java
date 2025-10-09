@@ -167,4 +167,7 @@ public class ProductTemplate {
 
     @JacksonXmlProperty(localName = "operationSys")
     private LocalDateTime operationSys;
+
+    @JacksonXmlProperty(localName = "exported")
+    private String exported;
 }

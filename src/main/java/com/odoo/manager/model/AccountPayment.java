@@ -3,6 +3,7 @@ package com.odoo.manager.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -125,4 +126,7 @@ public class AccountPayment {
 
     @JacksonXmlProperty(localName = "operationSys")
     private LocalDateTime operationSys;
+
+    @JacksonXmlProperty(localName = "exported")
+    private String exported;
 }

@@ -103,8 +103,11 @@ public class AccountPaymentRegister {
     private Integer paymentTokenId;
 
     @JacksonXmlProperty(localName = "operation")
-    private String operation; // varchar(1)
+    private String operation;
 
     @JacksonXmlProperty(localName = "operationSys")
     private LocalDateTime operationSys;
+
+    @JacksonXmlProperty(localName = "exported")
+    private String exported;
 }

@@ -83,4 +83,8 @@ public class ProductCategory {
 
     @JacksonXmlProperty(localName = "operationSys")
     private LocalDateTime operationSys;
+
+    @JacksonXmlProperty(localName = "exported")
+    private String exported; // 'E' cuando se exporta
+
 }
