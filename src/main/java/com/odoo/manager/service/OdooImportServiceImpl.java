@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -32,28 +33,48 @@ public class OdooImportServiceImpl implements OdooImportService {
     private final AccountPaymentRepo accountPaymentRepo;
     private final AccountPartialReconcileRepo accountPartialReconcileRepo;
     private final AccountFullReconcileRepo accountFullReconcileRepo;
-
+    private final AuOXMLFileRepo auOXMLFileRepo;
     private static String schema;
+
+    private String sha256;
 
     @Override
     public void importFromOXML(String oXmlPath) {
 
-        if (!validateOXML(oXmlPath)) {
-            return;
-        }
         try {
+            validateFileBeforeImport(oXmlPath);
             OdooData odooData = xmlMapper.readValue(new File(oXmlPath), OdooData.class);
-            if (odooData == null) {
-                log.error("No data found in Odoo XML file: {}", oXmlPath);
-                return;
-            }
-            log.info("Odoo XML file read successfully: {}", oXmlPath);
             schema = odooData.getHeader().getOdooSchema().getSchema();
             importOdooData(odooData);
-
+            saveImportFileAsAuditing(oXmlPath);
         } catch (IOException e) {
             log.error("Error reading Odoo XML file: {}", e.getMessage());
         }
+    }
+
+    private void validateFileBeforeImport(String oXmlPath) {
+        this.sha256 = HashUtil.obtainSHA256(oXmlPath);
+        boolean exists = auOXMLFileRepo.existsBySha256(sha256);
+        if (exists) {
+            throw new RuntimeException("Odoo XML ya fue importado anteriormente: " + sha256);
+        }
+    }
+
+    private void saveImportFileAsAuditing(String file) {
+
+        boolean inserted = auOXMLFileRepo.save(
+                AuOXMLFile.builder()
+                        .fecha(LocalDateTime.now())
+                        .archivo(file)
+                        .sha256(sha256)
+                        .build()
+        );
+        if (inserted) {
+            log.info("Odoo XML Importado Exitosamente: {}", file);
+        } else {
+            log.error("Error al registrar Odoo XML en tabla de auditoria: {}", file);
+        }
+
     }
 
     private void importOdooData(OdooData odooData) {
@@ -157,27 +178,5 @@ public class OdooImportServiceImpl implements OdooImportService {
             return;
         }
         accountFullReconcileRepo.saveBatch(accountFullReconcileList, schema);
-    }
-
-    private boolean validateOXML(String oXmlPath) {
-        Path path = Paths.get(oXmlPath);
-        try {
-            String sha256 = HashUtil.sha256(path);
-            log.info("SHA-256: {}", sha256);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        if (Files.notExists(path)) {
-            log.error("File not found: {}", oXmlPath);
-            return false;
-        } else if (Files.isDirectory(path)) {
-            log.error("Directory found: {}", oXmlPath);
-            return false;
-        } else if (Files.isRegularFile(path)) {
-            return true;
-        } else {
-            log.error("Invalid file: {}", oXmlPath);
-            return false;
-        }
     }
 }
