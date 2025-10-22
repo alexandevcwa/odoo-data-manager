@@ -56,6 +56,8 @@ public class OdooExportServiceImpl implements OdooExportService {
     private final AccountPartialReconcileRepo accountPartialReconcileRepo;
     private final AccountFullReconcileRepo accountFullReconcileRepo;
 
+    private static boolean existsData;
+
     @Override
     public void export(String path, String schema) {
 
@@ -63,6 +65,11 @@ public class OdooExportServiceImpl implements OdooExportService {
             String fileName = generateOdooFileName(path);
             OdooData odooData = odooData();
             odooData.setHeader(header(schema));
+
+            if(!existsData) {
+                log.info("No hay datos que exportar.");
+                return;
+            }
 
             transactionTemplate.execute(status -> {
                 try {
@@ -101,6 +108,20 @@ public class OdooExportServiceImpl implements OdooExportService {
         List<AccountPartialReconcile> accountPartialReconciles = accountPartialReconcileRepo
                 .findAllByExportedIsNotNull();
         List<AccountFullReconcile> accountFullReconciles = accountFullReconcileRepo.findAllByExportedIsNotNull();
+
+        existsData = !productCategories.isEmpty()
+                || !productTemplates.isEmpty()
+                || !productProducts.isEmpty()
+                || !resPartners.isEmpty()
+                || !saleOrders.isEmpty()
+                || !saleOrderLines.isEmpty()
+                || !saleAdvancePaymentInvts.isEmpty()
+                || !accountMoves.isEmpty()
+                || !accountMoveLines.isEmpty()
+                || !accountPaymentRegisters.isEmpty()
+                || !accountPayments.isEmpty()
+                || !accountPartialReconciles.isEmpty()
+                || !accountFullReconciles.isEmpty();
 
         return OdooData.builder()
                 .productCategoryList(productCategories)
