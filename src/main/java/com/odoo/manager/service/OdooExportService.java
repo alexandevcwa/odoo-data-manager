@@ -3,10 +3,10 @@ package com.odoo.manager.service;
 public interface OdooExportService {
 
     /**
-     * Interface that export a oxml file that contains all odoo sales data generated
-     * 
-     * @param path       S.O. path where file will be save
-     * @param instanceId Code assigned by data center to identified the instalation
+     * Exports data to the specified file path based on the provided schema.
+     *
+     * @param path The file path where the data will be exported to.
+     * @param schema The schema that defines the structure of the exported data.
      */
-    void export(String path, short instanceId);
+    void export(String path, String schema);
 }

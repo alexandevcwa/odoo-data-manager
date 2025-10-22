@@ -55,15 +55,14 @@ public class OdooExportServiceImpl implements OdooExportService {
     private final AccountPaymentRepo accountPaymentRepo;
     private final AccountPartialReconcileRepo accountPartialReconcileRepo;
     private final AccountFullReconcileRepo accountFullReconcileRepo;
-    private final OdooSchemaRepo odooSchemaRepo;
 
     @Override
-    public void export(String path, short instanceId) {
+    public void export(String path, String schema) {
 
         try {
             String fileName = generateOdooFileName(path);
             OdooData odooData = odooData();
-            odooData.setHeader(header(instanceId));
+            odooData.setHeader(header(schema));
 
             transactionTemplate.execute(status -> {
                 try {
@@ -136,13 +135,12 @@ public class OdooExportServiceImpl implements OdooExportService {
         accountFullReconcileRepo.markGroupAsExported(odooData.getAccountFullReconcileList());
     }
 
-    private Header header(Short instanceId) {
+    private Header header(String schema) {
 
-        OdooSchema odooSchema = odooSchemaRepo.findOdooSchemaByOdooCompanyId(instanceId)
-                .orElseThrow(() -> new EmptyResultDataAccessException(
-                        String.format("Schema with instance id %d does not exist", instanceId), 1));
+        OdooSchema sc = new OdooSchema();
+        sc.setSchema(schema.toLowerCase());
         return Header.builder()
-                .odooSchema(odooSchema)
+                .odooSchema(sc)
                 .exportedDate(LocalDateTime.now())
                 .build();
     }
